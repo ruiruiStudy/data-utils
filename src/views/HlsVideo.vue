@@ -1,0 +1,60 @@
+<template>
+  <div class="app-container">
+    <div style="margin-bottom: 8px;">
+      <el-input v-model="videoUrl" style="width: 70%;" />
+      <el-button @click="playHLS(videoUrl)" style="margin-left: 8px;">播放</el-button>
+    </div>
+    <video
+      id="hls"
+      width="1000"
+      height="600"
+      class="img-responsive video-js vjs-default-skin"
+      controls
+      preload="auto"
+      autoplay="true"
+      ref="videoRef"
+    >
+    </video>
+  </div>
+</template>
+
+<script setup>
+import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
+
+const videoRef = ref()
+const videoUrl = ref('http://122.192.255.50:7086/live/cameraid/1000252%240/substream/1.m3u8')
+let hlsPlayer
+const playHLS = (url) => {
+  const video = videoRef.value;
+  if (typeof hlsPlayer !== "undefined") {
+    if (hlsPlayer != null) {
+      hlsPlayer.destroy();
+    }
+  }
+  hlsPlayer = new Hls();
+  hlsPlayer.loadSource(url);
+  hlsPlayer.attachMedia(video);//将视频元素绑定到此 HLS 对象
+  hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function () {
+    video.play();
+    emit("changeIsPlay", true);
+  });
+  hlsPlayer.on(Hls.Events.ERROR, function (eventName, data) {
+    if(data.fatal && data.type !=="networkError") {
+      video.pause();
+      emit("changeIsPlay", false);
+    }
+  });
+};
+
+onBeforeUnmount(() => {
+  if (typeof hlsPlayer!== "undefined") {
+    hlsPlayer.destroy();
+  }
+})
+
+
+</script>
+
+<style scoped>
+
+</style>
