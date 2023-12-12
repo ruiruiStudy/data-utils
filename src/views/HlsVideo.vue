@@ -11,7 +11,8 @@
       class="img-responsive video-js vjs-default-skin"
       controls
       preload="auto"
-      autoplay="true"
+      :autoplay="true"
+      :muted="false"
       ref="videoRef"
     >
     </video>
@@ -22,7 +23,7 @@
 import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
 
 const videoRef = ref()
-const videoUrl = ref('http://122.192.255.50:7086/live/cameraid/1000252%240/substream/1.m3u8')
+const videoUrl = ref('https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8')
 let hlsPlayer
 const playHLS = (url) => {
   const video = videoRef.value;
