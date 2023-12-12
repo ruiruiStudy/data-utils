@@ -5,47 +5,39 @@ export const constantRoutes = [
   {
     path: '/',
     name: 'Home',
-    // component: () => import('@/views/HomeView'),
-    // meta: { title: '首页', icon: 'user' }
     component: () => import('@/views/decrypt/Index'),
-    meta: { title: '解密', icon: 'user' }
+    meta: { title: '解密' }
   },
   {
     path: '/hls',
     name: 'Hls',
     component: () => import('@/views/HlsVideo'),
-    meta: { title: 'm3u8视频', icon: 'user' }
+    meta: { title: 'm3u8视频', }
   },
   {
     path: '/setting',
     name: 'Setting',
     component: () => import('@/views/Setting'),
-    meta: { title: '配置项目列表', icon: 'user' }
+    meta: { title: '配置项目列表', }
   },
   {
     path: '/about',
     name: 'About',
     component: () => import('@/views/AboutView'),
-    meta: { title: '关于', icon: 'user' }
+    meta: { title: '关于', }
   },
   {
     path: '/comic',
     name: 'Comic',
     component: () => import('@/views/comicCharacter/index'),
-    meta: { title: '手绘动漫css', icon: 'user' }
+    meta: { title: '手绘动漫css', }
   },
-  // {
-  //   path: '/transform',
-  //   name: 'Transform',
-  //   component: () => import('@/views/Transform'),
-  //   meta: { title: '翻译', icon: 'user' }
-  // },
-  // {
-  //   path: '/decrypt',
-  //   name: 'Decrypt',
-  //   component: () => import('@/views/Decrypt'),
-  //   meta: { title: '解密', icon: 'user' }
-  // },
+  {
+    path: '/random',
+    name: 'Random',
+    component: () => import('@/views/Random.vue'),
+    meta: { title: '生成随机数', }
+  },
 ]
 
 const router = createRouter({

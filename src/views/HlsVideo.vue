@@ -12,7 +12,7 @@
       controls
       preload="auto"
       :autoplay="true"
-      :muted="false"
+      muted
       ref="videoRef"
     >
     </video>
