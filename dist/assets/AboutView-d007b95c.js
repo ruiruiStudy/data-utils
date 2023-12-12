@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-c27b6911.js";import{az as o,q as t}from"./index-9d5be2bc.js";const c={},r={class:"app-container"};function n(s,a){return o(),t("div",r," 谁让你点的，快给我关了 ")}const f=e(c,[["render",n]]);export{f as default};
