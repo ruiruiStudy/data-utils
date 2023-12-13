@@ -9,16 +9,22 @@ export const constantRoutes = [
     meta: { title: '解密' }
   },
   {
+    path: '/setting',
+    name: 'Setting',
+    component: () => import('@/views/Setting'),
+    meta: { title: '解密项目列表', }
+  },
+  {
     path: '/hls',
     name: 'Hls',
     component: () => import('@/views/HlsVideo'),
     meta: { title: 'm3u8视频', }
   },
   {
-    path: '/setting',
-    name: 'Setting',
-    component: () => import('@/views/Setting'),
-    meta: { title: '配置项目列表', }
+    path: '/rtsp',
+    name: 'Rtsp',
+    component: () => import('@/views/RTSP.vue'),
+    meta: { title: 'rtsp视频', }
   },
   {
     path: '/about',

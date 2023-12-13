@@ -6,12 +6,12 @@
       :before-close="handleClose"
   >
     <el-form :model="formData" label-width="120px" label-position="top">
-      <el-form-item label="1.选择默认项目">
+      <el-form-item label="1.设置默认解密的项目">
         <el-select v-model="formData.projectId" placeholder="选择项目">
-          <el-option v-for="item in projectOptions" :key="item.projectId" :label="item.projectName" :value="item.projectId"/>
+          <el-option v-for="item in selectOptions" :key="item.projectId" :label="item.projectName" :value="item.projectId"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="2.点击输入框，是否自动清除内容">
+      <el-form-item label="2.点击左侧输入框，是否自动清除内容">
         <el-switch v-model="formData.autoClean" active-text="是" inactive-text="否"/>
       </el-form-item>
       <el-form-item label="3.解密后的树状结构，默认展开几级">
@@ -42,11 +42,19 @@ const emits = defineEmits(['success'])
 const open = ref(false)
 const direction = ref('rtl')
 const formData = reactive({
-  projectId: localStorage.getItem('projectId') || '0',
+  projectId: localStorage.getItem('defaultProjectId') || '0',
   autoClean: localStorage.getItem('autoClean') === 'true' || false,
   expandLevel: localStorage.getItem('expandLevel') || '5'
 })
-console.log('auto', localStorage.getItem('autoClean'), typeof localStorage.getItem('autoClean'))
+
+const selectOptions = ref([])
+const storage = localStorage.getItem('tableData')
+if(!storage) {
+  selectOptions.value = projectOptions
+} else {
+  selectOptions.value = JSON.parse(storage)
+}
+
 const handleClose = () => {
   open.value = false
 }
@@ -60,7 +68,7 @@ defineExpose({
 const confirmClick = () => {
   console.log('formData', formData)
   const { projectId, autoClean, expandLevel } = formData
-  localStorage.setItem('projectId', projectId)
+  localStorage.setItem('defaultProjectId', projectId)
   localStorage.setItem('autoClean', autoClean)
   localStorage.setItem('expandLevel', expandLevel)
   emits('success')
@@ -70,6 +78,7 @@ const confirmClick = () => {
     type: 'success',
     showClose: true,
   })
+  location.reload()
 }
 </script>
 

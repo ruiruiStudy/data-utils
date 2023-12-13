@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form :model="formData" label-width="120px">
+    <el-alert title="用于mock数据：生成从几到几的随机数，支持配置生成的个数，支持配置生成的精度，结果可复制" type="success" />
+    <el-form :model="formData" label-width="120px" style="margin-top: 20px;">
       <el-form-item label="最小值">
         <el-input-number v-model="formData.min" placeholder="最小值" />
       </el-form-item>

@@ -3,7 +3,7 @@
     <el-form :inline="true" :model="formData" ref="formDataRef" :rules="rules">
       <el-form-item label="项目" prop="projectId">
         <el-select v-model="formData.projectId" placeholder="项目" @change="handleChangeSelect" style="width: 100px;">
-          <el-option v-for="item in projectOptions" :key="item.projectId" :label="item.projectName" :value="item.projectId"/>
+          <el-option v-for="item in selectOptions" :key="item.projectId" :label="item.projectName" :value="item.projectId"/>
         </el-select>
       </el-form-item>
       <el-form-item label="key值" prop="cryptKey">
@@ -60,6 +60,7 @@ import { projectOptions } from '@/utils/options'
 const jsonKey = ref(true)
 const formDataRef = ref()
 const showSetting = ref(false)
+const selectOptions = ref([])
 
 // 未解密内容
 const noDecryptTexts = ref()
@@ -124,7 +125,13 @@ const handleCrack = async (formEl) => {
 
 // 下拉列表切换事件
 const handleChangeSelect = (e) => {
-  const optionItem = projectOptions.find(item => item.projectId == e)
+  const storage = localStorage.getItem('tableData')
+  if(!storage) {
+    selectOptions.value = projectOptions
+  } else {
+    selectOptions.value = JSON.parse(storage)
+  }
+  const optionItem = selectOptions.value.find(item => item.projectId == e)
   formData.projectId = e
   formData.cryptKey = optionItem.key
   formData.cryptIv = optionItem.iv
@@ -132,7 +139,8 @@ const handleChangeSelect = (e) => {
 
 // 预设下拉选项值
 const presetOption = () => {
-  handleChangeSelect('0')
+  const defaultProjectId = localStorage.getItem('defaultProjectId') || '0'
+  handleChangeSelect(defaultProjectId)
 }
 presetOption()
 
@@ -148,7 +156,6 @@ const handleSetting = () => {
 // 设置内容改变
 const changeSetting = () => {
   jsonKey.value = false
-  // jsonKey.value = true
 }
 
 // 输入框获取焦点
