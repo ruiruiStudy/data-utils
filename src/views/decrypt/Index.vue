@@ -51,6 +51,7 @@
 <!--  提示框  -->
     <tips
       ref="tipRef"
+      @close="showTip = false"
       v-if="showTip"
     />
   </div>
@@ -110,7 +111,6 @@ const handleCrack = async (formEl) => {
         return false
       }
 
-      console.log('类型', typeof noDecryptTexts.value)
       if(noDecryptTexts.value.includes('{')) {
         decryptTexts.value = JSON.parse(noDecryptTexts.value)
       } else {
@@ -126,7 +126,6 @@ const handleCrack = async (formEl) => {
           return false
         }
         decryptTexts.value = JSON.parse((Decrypt(toCryptCtx, cryptKey, cryptIv)))
-        console.log('decryptTexts', decryptTexts.value)
       }
     }
   })
@@ -136,7 +135,6 @@ const tipRef = ref()
 // 下拉列表切换事件
 const handleChangeSelect = (e) => {
   const storage = localStorage.getItem('tableData')
-  console.log('storage', storage)
   if(!storage) {
     // 获取不到缓存，就提示添加配置
     showTip.value = true
@@ -144,7 +142,6 @@ const handleChangeSelect = (e) => {
     selectOptions.value = JSON.parse(storage)
   }
   const optionItem = selectOptions.value.find(item => item.projectId == e)
-  console.log('optionItem', optionItem)
   if(optionItem) {
     formData.projectId = e
     formData.cryptKey = optionItem.key
@@ -164,7 +161,6 @@ const settingRef = ref()
 const handleSetting = () => {
   showSetting.value = true
   nextTick(() => {
-    console.log('settingRef', settingRef)
     settingRef.value.handleOpen()
   })
 }

@@ -71,7 +71,6 @@ defineExpose({
 })
 
 const confirmClick = () => {
-  console.log('formData', formData)
   const { projectId, autoClean, expandLevel } = formData
   localStorage.setItem('defaultProjectId', projectId)
   localStorage.setItem('autoClean', autoClean)

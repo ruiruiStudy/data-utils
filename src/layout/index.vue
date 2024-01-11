@@ -23,9 +23,7 @@ import { RouterView } from 'vue-router'
 import { ref } from "vue";
 // const isCollapse = ref(localStorage.getItem('showSidebar') || false)
 const isCollapse = false;
-console.log('isCollapse', isCollapse)
 const toggleShowSidebar = e => {
-  console.log('e', e)
   isCollapse.value = e
   localStorage.setItem('showSidebar', e)
 }

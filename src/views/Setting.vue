@@ -3,11 +3,14 @@
 
     <el-alert title="请手动添加项目解密配置，数据将缓存在浏览器中，注意：如果切换浏览器、需要重新添加配置" type="info" show-icon closable />
 
-    <el-button
-      type="primary"
-      @click="handleAdd"
-      style="margin-top: 10px;"
-    >新增</el-button>
+    <div style="line-height: 32px;margin-top: 10px;">
+      <el-button
+        type="primary"
+        @click="handleAdd"
+      >新增</el-button>
+
+      <span style="color: orange;margin-left: 8px;">注：以下数据均来自浏览器缓存:LocalStorage，如不手动添加，则列表为空</span>
+    </div>
 
     <el-table :data="tableData" v-loading="loading" border style="margin-top: 10px;">
       <el-table-column prop="projectId" label="项目id" width="70" />

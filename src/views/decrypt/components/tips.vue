@@ -19,20 +19,19 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter()
-
+const emits = defineEmits(['close'])
 const dialogVisible = ref(true)
 
 const handleClose = () => {
-  open.value = false
+  dialogVisible.value = false
+  emits('close')
 }
 
 const handleOpen = () => {
-  console.log('打开')
   dialogVisible.value = true
 }
 
 const handleConfirm = () => {
-  console.log('peizhi')
   router.push({
     path: '/setting'
   })
