@@ -1,12 +1,15 @@
 <template>
   <div class="app-container">
 
+    <el-alert title="请手动添加项目解密配置，数据将缓存在浏览器中，注意：如果切换浏览器、需要重新添加配置" type="info" show-icon closable />
+
     <el-button
       type="primary"
       @click="handleAdd"
+      style="margin-top: 10px;"
     >新增</el-button>
 
-    <el-table :data="tableData" v-loading="loading" border style="margin-top: 20px;">
+    <el-table :data="tableData" v-loading="loading" border style="margin-top: 10px;">
       <el-table-column prop="projectId" label="项目id" width="70" />
       <el-table-column prop="projectName" label="项目名称" width="180" />
       <el-table-column prop="key" label="key值" />
@@ -62,7 +65,7 @@
 <script setup>
 import { reactive, ref, getCurrentInstance } from "vue";
 const { proxy } = getCurrentInstance()
-import { projectOptions } from '@/utils/options'
+// import { projectOptions } from '@/utils/options'
 const tableData = ref([])
 import { ElMessageBox, ElMessage } from "element-plus";
 
@@ -93,7 +96,7 @@ function getList() {
   loading.value = true
   const storage = localStorage.getItem('tableData')
   if(!storage) {
-    tableData.value = projectOptions
+    tableData.value = []
     setTimeout(() => {
       loading.value = false
     }, 500)
@@ -161,7 +164,9 @@ const handleConfirm = async (formEl) => {
     if (valid) {
       if(!isEdit.value) {
         const lastArr = [...tableData.value, Object.assign(formData.value, {
-          projectId: String(Number(tableData.value[tableData.value.length - 1].projectId) + 1)
+          projectId: tableData.value.length > 0
+            ? String(Number(tableData.value[tableData.value.length - 1].projectId) + 1)
+            : '0'
         })]
         localStorage.setItem('tableData', JSON.stringify(lastArr))
         reset()

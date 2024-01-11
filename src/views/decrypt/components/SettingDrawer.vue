@@ -36,8 +36,8 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { ElMessage } from 'element-plus'
-import { projectOptions } from '@/utils/options'
-const emits = defineEmits(['success'])
+
+const emits = defineEmits(['success', 'close'])
 
 const open = ref(false)
 const direction = ref('rtl')
@@ -50,13 +50,18 @@ const formData = reactive({
 const selectOptions = ref([])
 const storage = localStorage.getItem('tableData')
 if(!storage) {
-  selectOptions.value = projectOptions
+  ElMessage({
+    message: '未配置解密，暂时不能设置默认的解密项目',
+    type: 'warning',
+    showClose: true,
+  })
 } else {
   selectOptions.value = JSON.parse(storage)
 }
 
 const handleClose = () => {
   open.value = false
+  emits('close')
 }
 const handleOpen = () => {
   open.value = true

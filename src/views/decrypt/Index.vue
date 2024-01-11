@@ -31,19 +31,27 @@
       <el-col :span="12">
         <div class="crack-box">
           <json-viewer
-              v-if="jsonKey"
-              :value="decryptTexts"
-              :expand-depth="expandLevel"
-              copyable
+            v-if="jsonKey"
+            :value="decryptTexts"
+            :expand-depth="expandLevel"
+            copyable
           />
         </div>
       </el-col>
     </el-row>
 
+<!--  解密设置  -->
     <decrypt-setting
       ref="settingRef"
       @success="changeSetting"
+      @close="showSetting = false"
       v-if="showSetting"
+    />
+
+<!--  提示框  -->
+    <tips
+      ref="tipRef"
+      v-if="showTip"
     />
   </div>
 </template>
@@ -54,14 +62,14 @@ import { ElMessage } from 'element-plus'
 import { Setting } from '@element-plus/icons-vue'
 import JsonViewer from 'vue-json-viewer'
 import DecryptSetting from './components/SettingDrawer'
+import Tips from './components/tips.vue'
 import { Decrypt } from "@/utils/decrypt";
-import { projectOptions } from '@/utils/options'
 
 const jsonKey = ref(true)
 const formDataRef = ref()
 const showSetting = ref(false)
 const selectOptions = ref([])
-
+const showTip = ref(false)
 // 未解密内容
 const noDecryptTexts = ref()
 
@@ -118,23 +126,30 @@ const handleCrack = async (formEl) => {
           return false
         }
         decryptTexts.value = JSON.parse((Decrypt(toCryptCtx, cryptKey, cryptIv)))
+        console.log('decryptTexts', decryptTexts.value)
       }
     }
   })
 }
 
+const tipRef = ref()
 // 下拉列表切换事件
 const handleChangeSelect = (e) => {
   const storage = localStorage.getItem('tableData')
+  console.log('storage', storage)
   if(!storage) {
-    selectOptions.value = projectOptions
+    // 获取不到缓存，就提示添加配置
+    showTip.value = true
   } else {
     selectOptions.value = JSON.parse(storage)
   }
   const optionItem = selectOptions.value.find(item => item.projectId == e)
-  formData.projectId = e
-  formData.cryptKey = optionItem.key
-  formData.cryptIv = optionItem.iv
+  console.log('optionItem', optionItem)
+  if(optionItem) {
+    formData.projectId = e
+    formData.cryptKey = optionItem.key
+    formData.cryptIv = optionItem.iv
+  }
 }
 
 // 预设下拉选项值
@@ -149,6 +164,7 @@ const settingRef = ref()
 const handleSetting = () => {
   showSetting.value = true
   nextTick(() => {
+    console.log('settingRef', settingRef)
     settingRef.value.handleOpen()
   })
 }
