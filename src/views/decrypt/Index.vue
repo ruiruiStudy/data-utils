@@ -67,6 +67,7 @@ import DecryptSetting from './components/SettingDrawer'
 import Tips from './components/tips.vue'
 import { Decrypt, Encrypt } from "@/utils/decrypt";
 
+console.log('加解密娃哈哈')
 const jsonKey = ref(true)
 const formDataRef = ref()
 const showSetting = ref(false)
@@ -109,7 +110,6 @@ const rules = reactive({
 const handleCrack = async (formEl) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
-    console.log('通过')
     if (valid) {
       if(modeType == 1) {
         handleDecrypt()
@@ -160,7 +160,7 @@ const handleEncrypt = () => {
     return false
   }
   const { cryptKey, cryptIv } = formData
-  decryptTexts.value = Encrypt(noDecryptTexts.value, cryptKey, cryptIv)
+  decryptTexts.value = Encrypt(JSON.stringify(noDecryptTexts.value), cryptKey, cryptIv)
 }
 
 const tipRef = ref()
@@ -210,7 +210,6 @@ const handleFouce = () => {
 }
 // 输入框值改变后
 const handleInputChange = () => {
-  console.log('改变')
   if(localStorage.getItem('autoCrypt') === 'true') {
     handleCrack(formDataRef.value)
   }
