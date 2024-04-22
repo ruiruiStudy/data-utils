@@ -23,3 +23,24 @@ export function Decrypt (word, keyStr, ivStr) {
   const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8)
   return decryptedStr.toString()
 }
+
+/**
+ * AES加密 ：字符串 key iv  返回base64
+ */
+export function Encrypt (word, keyStr, ivStr) {
+  let key = KEY
+  let iv = IV
+
+  if (keyStr) {
+    key = CryptoJS.enc.Utf8.parse(keyStr)
+    iv = CryptoJS.enc.Utf8.parse(ivStr)
+  }
+
+  const src = CryptoJS.enc.Utf8.parse(word)
+  const encrypted = CryptoJS.AES.encrypt(src, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  })
+  return CryptoJS.enc.Base64.stringify(encrypted.ciphertext)
+}

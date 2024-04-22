@@ -13,7 +13,7 @@
         <el-input v-model="formData.cryptIv" placeholder="请输入iv值" style="width: 240px;"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleCrack(formDataRef)">解密</el-button>
+        <el-button type="primary" @click="handleCrack(formDataRef)">{{ modeType == 2 ? '加密' : '解密' }}</el-button>
         <el-button type="primary" plain :icon="Setting" @click="handleSetting">设置</el-button>
       </el-form-item>
     </el-form>
@@ -21,11 +21,12 @@
     <el-row :gutter="8">
       <el-col :span="12">
         <el-input
-            v-model="noDecryptTexts"
-            :rows="28"
-            type="textarea"
-            placeholder="请输入密文/JSON对象&#10【支持JSON对象】&#10【支持JSON对象】&#10【支持JSON对象】&#10【密文/JSON对象两种格式】"
-            @focus="handleFouce"
+          v-model="noDecryptTexts"
+          :rows="28"
+          type="textarea"
+          :placeholder="placeholderTip"
+          @focus="handleFouce"
+          @input="handleInputChange"
         />
       </el-col>
       <el-col :span="12">
@@ -58,13 +59,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick } from "vue";
+import { ref, reactive, nextTick, computed } from "vue";
 import { ElMessage } from 'element-plus'
 import { Setting } from '@element-plus/icons-vue'
 import JsonViewer from 'vue-json-viewer'
 import DecryptSetting from './components/SettingDrawer'
 import Tips from './components/tips.vue'
-import { Decrypt } from "@/utils/decrypt";
+import { Decrypt, Encrypt } from "@/utils/decrypt";
 
 const jsonKey = ref(true)
 const formDataRef = ref()
@@ -75,7 +76,17 @@ const showTip = ref(false)
 const noDecryptTexts = ref()
 
 // 解密后内容
-const decryptTexts = ref('请在左侧输入密文/JSON对象')
+const decryptTexts = localStorage.getItem('modeType') == 2 ? ref('请输入需要解密的内容') : ref('请在左侧输入密文/JSON对象')
+
+// 默认展开节点层级
+const expandLevel = ref(localStorage.getItem('expandLevel') || '5')
+// 1=解密，2=加密
+const modeType = localStorage.getItem('modeType') || '1'
+// 左侧框默认提示
+const placeholderTip = computed(() => {
+  return localStorage.getItem('modeType') == 2 ? '请输入需要加密的内容' : "请输入密文/JSON对象\n【支持JSON对象】\n【支持JSON对象】\n【支持JSON对象】\n【密文/JSON对象两种格式】"
+})
+
 
 // 表单内容
 const formData = reactive({
@@ -94,41 +105,62 @@ const rules = reactive({
   ]
 })
 
-// 默认展开节点层级
-const expandLevel = ref(localStorage.getItem('expandLevel') || '5')
-
-// 解密事件
+// 加解密事件
 const handleCrack = async (formEl) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
+    console.log('通过')
     if (valid) {
-      if(!noDecryptTexts.value) {
-        ElMessage({
-          message: '请先输入密文/JSON对象',
-          type: 'warning',
-          showClose: true,
-        })
-        return false
-      }
-
-      if(noDecryptTexts.value.includes('{')) {
-        decryptTexts.value = JSON.parse(noDecryptTexts.value)
+      if(modeType == 1) {
+        handleDecrypt()
       } else {
-        const { cryptKey, cryptIv } = formData
-        const toCryptCtx = noDecryptTexts.value.replace(/\s+/g, '')
-        const result = (Decrypt(toCryptCtx, cryptKey, cryptIv))
-        if(!result) {
-          ElMessage({
-            message: '别逗，输入正常一点的加密JSON字符串',
-            type: 'error',
-            showClose: true,
-          })
-          return false
-        }
-        decryptTexts.value = JSON.parse((Decrypt(toCryptCtx, cryptKey, cryptIv)))
+        handleEncrypt()
       }
     }
   })
+}
+
+// 处理解密
+const handleDecrypt = () => {
+  if(!noDecryptTexts.value) {
+    ElMessage({
+      message: '请先输入密文/JSON对象',
+      type: 'warning',
+      showClose: true,
+    })
+    return false
+  }
+
+  if(noDecryptTexts.value.includes('{')) {
+    decryptTexts.value = JSON.parse(noDecryptTexts.value)
+  } else {
+    const { cryptKey, cryptIv } = formData
+    const toCryptCtx = noDecryptTexts.value.replace(/\s+/g, '')
+    const result = (Decrypt(toCryptCtx, cryptKey, cryptIv))
+    if(!result) {
+      ElMessage({
+        message: '别逗，输入正常一点的加密JSON字符串',
+        type: 'error',
+        showClose: true,
+      })
+      return false
+    }
+    decryptTexts.value = JSON.parse((Decrypt(toCryptCtx, cryptKey, cryptIv)))
+  }
+}
+
+// 处理加密
+const handleEncrypt = () => {
+  if(!noDecryptTexts.value) {
+    ElMessage({
+      message: '请先输入需要加密的内容',
+      type: 'warning',
+      showClose: true,
+    })
+    return false
+  }
+  const { cryptKey, cryptIv } = formData
+  decryptTexts.value = Encrypt(noDecryptTexts.value, cryptKey, cryptIv)
 }
 
 const tipRef = ref()
@@ -176,6 +208,13 @@ const handleFouce = () => {
     noDecryptTexts.value = null
   }
 }
+// 输入框值改变后
+const handleInputChange = () => {
+  console.log('改变')
+  if(localStorage.getItem('autoCrypt') === 'true') {
+    handleCrack(formDataRef.value)
+  }
+}
 </script>
 
 <style scoped>
@@ -188,5 +227,8 @@ const handleFouce = () => {
 }
 :deep(.el-form--inline .el-form-item) {
     margin-right: 8px;
+}
+:deep(.el-drawer__header) {
+  margin-bottom: 12px;
 }
 </style>
