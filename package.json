@@ -10,7 +10,7 @@
   "dependencies": {
     "crypto-js": "^4.1.1",
     "echarts": "^5.4.2",
-    "element-plus": "^2.3.4",
+    "element-plus": "^2.7.6",
     "sass": "^1.62.1",
     "vue": "^3.3.2",
     "vue-json-viewer": "^3.0.4",
