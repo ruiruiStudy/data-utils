@@ -44,6 +44,12 @@ export const constantRoutes = [
     component: () => import('@/views/Random.vue'),
     meta: { title: '生成随机数', }
   },
+  {
+    path: '/xgPlayer',
+    name: 'XgPlayer',
+    component: () => import('@/views/xgPlayer.vue'),
+    meta: { title: '西瓜视频', }
+  },
 ]
 
 const router = createRouter({
